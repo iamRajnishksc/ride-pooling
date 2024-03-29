@@ -1,11 +1,10 @@
-package com.foodkart.service;
+package com.ridepool.service;
 
-import com.foodkart.model.Location;
-import com.foodkart.model.Ride;
+import com.ridepool.model.Location;
+import com.ridepool.model.Ride;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 public interface RideService {
 

@@ -1,12 +1,12 @@
-package com.foodkart;
+package com.ridepool;
 
-import com.foodkart.enums.RideStatus;
-import com.foodkart.enums.VehicleType;
-import com.foodkart.model.*;
-import com.foodkart.service.ProfileService;
-import com.foodkart.service.RideService;
-import com.foodkart.service.RideServiceImpl;
-import com.foodkart.service.VehicleService;
+import com.ridepool.enums.RideStatus;
+import com.ridepool.enums.VehicleType;
+import com.ridepool.model.*;
+import com.ridepool.service.ProfileService;
+import com.ridepool.service.RideService;
+import com.ridepool.service.RideServiceImpl;
+import com.ridepool.service.VehicleService;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

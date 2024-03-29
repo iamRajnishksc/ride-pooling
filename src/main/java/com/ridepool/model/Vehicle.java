@@ -1,6 +1,6 @@
-package com.foodkart.model;
+package com.ridepool.model;
 
-import com.foodkart.enums.VehicleType;
+import com.ridepool.enums.VehicleType;
 
 public class Vehicle {
     public final Integer id;

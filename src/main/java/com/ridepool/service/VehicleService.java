@@ -1,6 +1,6 @@
-package com.foodkart.service;
+package com.ridepool.service;
 
-import com.foodkart.model.Vehicle;
+import com.ridepool.model.Vehicle;
 
 import java.util.*;
 

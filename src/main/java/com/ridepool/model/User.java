@@ -1,4 +1,4 @@
-package com.foodkart.model;
+package com.ridepool.model;
 
 public class User extends Profile{
     public User(Integer id, String name, String email, Long phoneNo) {

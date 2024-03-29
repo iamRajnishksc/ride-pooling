@@ -1,4 +1,4 @@
-package com.foodkart.enums;
+package com.ridepool.enums;
 
 public enum VehicleType {
     CAR,

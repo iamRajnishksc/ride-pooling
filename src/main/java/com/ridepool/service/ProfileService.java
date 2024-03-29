@@ -1,10 +1,9 @@
-package com.foodkart.service;
+package com.ridepool.service;
 
-import com.foodkart.model.Driver;
-import com.foodkart.model.User;
+import com.ridepool.model.Driver;
+import com.ridepool.model.User;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class ProfileService {

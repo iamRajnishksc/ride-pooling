@@ -1,9 +1,8 @@
-package com.foodkart.service;
+package com.ridepool.service;
 
-import com.foodkart.model.Location;
-import com.foodkart.model.Ride;
+import com.ridepool.model.Location;
+import com.ridepool.model.Ride;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.HashMap;

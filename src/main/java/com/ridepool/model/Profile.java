@@ -1,4 +1,4 @@
-package com.foodkart.model;
+package com.ridepool.model;
 
 public  abstract class Profile {
     final Integer id;

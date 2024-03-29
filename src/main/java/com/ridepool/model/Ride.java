@@ -1,6 +1,6 @@
-package com.foodkart.model;
+package com.ridepool.model;
 
-import com.foodkart.enums.RideStatus;
+import com.ridepool.enums.RideStatus;
 
 import java.time.LocalDateTime;
 import java.util.List;
