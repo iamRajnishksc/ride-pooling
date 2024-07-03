@@ -24,8 +24,4 @@ for /f "tokens=2 delims=\"\"%%A in (file_links.txt) do (
 )
 
 REM Clean up temporary files
-del dir_listing.html
-del file_links.txt
-
-echo All files downloaded.
-endlocal
+del dir_listin
