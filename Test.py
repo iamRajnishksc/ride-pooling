@@ -64,3 +64,12 @@ print(f"All files downloaded to {output_dir}.")
           field: memory.heap_usage
         - attr: NonHeapMemoryUsage
           field: memory.non_heap_usage
+- module: http
+  metricsets: ["json"]
+  period: 10s
+  hosts: ["http://localhost:8080/actuator/metrics/jvm.memory.used"]
+  namespace: "springboot"
+  processors:
+    - decode_json_fields:
+        fields: ['measurements']
+        target: 'memory_usage'
