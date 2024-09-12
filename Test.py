@@ -43,3 +43,24 @@ def download_files(url, output_dir):
 download_files(base_url, output_dir)
 
 print(f"All files downloaded to {output_dir}.")
+
+
+- module: jolokia
+  metricsets: ["jmx"]
+  enabled: true
+  period: 10s
+  hosts: ["http://localhost:8080/your-webapp/jolokia"]
+  namespace: "metrics"
+  jmx.mappings:
+    - mbean: 'java.lang:type=GarbageCollector,name=*'
+      attributes:
+        - attr: CollectionTime
+          field: gc.collection_time
+        - attr: CollectionCount
+          field: gc.collection_count
+    - mbean: 'java.lang:type=Memory'
+      attributes:
+        - attr: HeapMemoryUsage
+          field: memory.heap_usage
+        - attr: NonHeapMemoryUsage
+          field: memory.non_heap_usage
