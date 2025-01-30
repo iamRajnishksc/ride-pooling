@@ -1,3 +1,42 @@
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.stereotype.Service;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.List;
+
+@Service
+public class ExcelService {
+    public <T> byte[] toExcel(List<T> data) throws IOException {
+        if (data.isEmpty()) return new byte[0];
+
+        try (Workbook wb = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
+            Sheet sheet = wb.createSheet("Data");
+            Field[] fields = data.get(0).getClass().getDeclaredFields();
+
+            // Header row
+            Row header = sheet.createRow(0);
+            for (int i = 0; i < fields.length; i++) 
+                header.createCell(i).setCellValue(fields[i].getName());
+
+            // Data rows
+            int rowNum = 1;
+            for (T obj : data) {
+                Row row = sheet.createRow(rowNum++);
+                for (int i = 0; i < fields.length; i++) {
+                    fields[i].setAccessible(true);
+                    row.createCell(i).setCellValue(fields[i].get(obj).toString());
+                }
+            }
+
+            wb.write(out);
+            return out.toByteArray();
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException("Error processing Excel file", e);
+        }
+    }
+}
 import os
 import requests
 from bs4 import BeautifulSoup
