@@ -1,50 +1,93 @@
-import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-import org.springframework.stereotype.Service;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.List;
+Summary
+1.1 Issue
+We need to reliably verify the integrity and identity of Android devices accessing secure backend services. Devices must prove they are unrooted, running trusted firmware, and are accessing via our official app. The solution should be resistant to tampering and emulator spoofing.
 
-@Service
-public class ExcelService {
-    public <T> byte[] toExcel(List<T> data) throws IOException {
-        if (data.isEmpty()) return new byte[0];
+1.2 Decision
+We will use Android’s hardware-backed Keystore with certificate attestation, validated on the server using a Google-signed certificate chain and a per-session challenge.
 
-        try (Workbook wb = new XSSFWorkbook(); ByteArrayOutputStream out = new ByteArrayOutputStream()) {
-            Sheet sheet = wb.createSheet("Data");
-            Field[] fields = data.get(0).getClass().getDeclaredFields();
+1.3 Status
+✅ Accepted
 
-            // Create header row
-            Row header = sheet.createRow(0);
-            for (int i = 0; i < fields.length; i++) {
-                fields[i].setAccessible(true);
-                String columnName = getJsonPropertyValue(fields[i]); // Get @JsonProperty value
-                header.createCell(i).setCellValue(columnName);
-            }
+2. Details
+2.1 Assumptions
+Android OS supports Key Attestation API (API 24+)
 
-            // Populate data rows
-            int rowNum = 1;
-            for (T obj : data) {
-                Row row = sheet.createRow(rowNum++);
-                for (int i = 0; i < fields.length; i++) {
-                    try {
-                        Object value = fields[i].get(obj);
-                        row.createCell(i).setCellValue(value != null ? value.toString() : "");
-                    } catch (IllegalAccessException e) {
-                        row.createCell(i).setCellValue("ERROR");
-                    }
-                }
-            }
+Device hardware has TEE or StrongBox support
 
-            wb.write(out);
-            return out.toByteArray();
-        }
-    }
+The backend can maintain pinned Google root certificates
 
-    private String getJsonPropertyValue(Field field) {
-        JsonProperty annotation = field.getAnnotation(JsonProperty.class);
-        return (annotation != null) ? annotation.value() : field.getName();
-    }
-}
+Our app can call the AndroidKeyStore and send the attestation data to the server
+
+2.2 Constraints
+Requires devices with proper hardware support (some older/emulators won't work)
+
+Validation logic must run offline (no OCSP/CRL lookups)
+
+Only devices with proper Google CA chain can be trusted
+
+2.3 Positions
+✅ For: Strong cryptographic assurance of device integrity
+
+❌ Against: Using Play Integrity API due to server-side limitations or dependency on Play Services
+
+✅ For: Attestation extension check using embedded challenge and package name
+
+✅ For: Rejecting chains not rooted in Google CA (e.g., self-signed)
+
+2.4 Argument
+Hardware-backed attestation provides the highest level of trust available on Android without requiring user action. The presence of a signed certificate chain from Google Attestation CA, along with a verified attestation extension, ensures that only authentic, unmodified devices can participate.
+
+2.5 Implications
+Implementation must include:
+
+Client-side: Key generation + attestation challenge + signature
+
+Server-side: Cert chain validation + extension decoding + challenge verification
+
+Client must not cache or reuse certificates
+
+Each request should use a fresh challenge to prevent replay
+
+Devices without TEE will be blocked or handled as untrusted
+
+3. Related
+3.1 Related decisions
+ADR-12: Skip Play Integrity API for cert-based attestation
+
+ADR-08: Enforce package name and certificate digest verification
+
+3.2 Related requirements
+REQ-009: Device Trust Enforcement
+
+REQ-015: Reject rooted/emulated clients
+
+3.3 Related artifacts
+AttestationServer.java
+
+MainActivity.kt (keypair generation)
+
+cert-validation.module (Java)
+
+3.4 Related principles
+Zero Trust by default
+
+Hardware-backed security preference
+
+Offline certificate validation
+
+4. Notes
+4.1 TBD
+OCSP/CRL optional integration
+
+StrongBox fallback strategy
+
+Dynamic root cert updates (if required)
+
+Would you like the same ADR version in Markdown, Confluence Wiki markup, or as a downloadable .adoc file? I can also generate versions for client-side or server-side attestation flow separately if needed.
+
+
+
+
+
+
+
