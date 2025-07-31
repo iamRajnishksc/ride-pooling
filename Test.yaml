@@ -1,0 +1,50 @@
+openapi: 3.0.3
+info:
+  title: Android Device Attestation API
+  version: 1.0.0
+  description: API to verify Android device attestation certificate chain and challenge.
+
+paths:
+  /attestation/verify:
+    post:
+      summary: Verify Android attestation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AttestationRequest'
+      responses:
+        '200':
+          description: Verification result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AttestationResponse'
+        '400':
+          description: Invalid request or attestation
+
+components:
+  schemas:
+    AttestationRequest:
+      type: object
+      properties:
+        challenge:
+          type: string
+          description: Base64-encoded nonce sent by server earlier
+        certificateChain:
+          type: array
+          items:
+            type: string
+          description: Base64-encoded certificate chain from Android device
+      required:
+        - challenge
+        - certificateChain
+
+    AttestationResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
